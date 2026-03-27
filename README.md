@@ -41,13 +41,3 @@ Optional:
 
 - If FFmpeg is available, the app can merge best video + best audio (higher quality).
 - If FFmpeg is missing, the app falls back to combined streams only (often lower quality, e.g. 360p).
-
-## EXE build options
-
-- `tools/06_COMPILAR_EXE_SEM_FFMPEG.bat`
-  - generates `dist/SimpleVideoDonwloader-lite.exe`
-  - smaller EXE, depends on FFmpeg installed on target PC
-- `tools/07_COMPILAR_EXE_COM_FFMPEG_EMBUTIDO.bat`
-  - generates `dist/SimpleVideoDonwloader-full.exe`
-  - includes FFmpeg inside EXE (larger), works on PCs without FFmpeg
-  - requires local files in `./ffmpeg/bin/ffmpeg.exe` and `./ffmpeg/bin/ffprobe.exe`
