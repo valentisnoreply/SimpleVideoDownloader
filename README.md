@@ -1,14 +1,14 @@
-﻿# Video Downloader (SVD v1.1)
+﻿# Video Downloader (VVD v1.2)
 
-Aplicativo desktop em Python (Tkinter) para baixar vídeos com `yt-dlp`.
+Aplicativo desktop em Python (Tkinter) para baixar videos com `yt-dlp`.
 
 ## Requisitos
 
-- Python 3.10 ou superior
+- Python 3.10+
 - `yt-dlp`
-- `ffmpeg` (opcional, mas recomendado para melhor compatibilidade)
+- `ffmpeg` (recomendado)
 
-## Instalação
+## Instalacao
 
 ```bash
 pip install yt-dlp
@@ -21,20 +21,22 @@ cd VVD
 python app.py
 ```
 
-## Funcionalidades
+## Principais mudancas da v1.2 (comparada a v1.1)
 
-- Download inteligente na melhor qualidade disponível
-- Listagem de qualidades antes de baixar
-- Escolha de pasta de destino
-- Exibição de status e log durante o processo
+- Adicionado sistema de temas (`light` e `dark`) com troca em tempo real.
+- Adicionado botao de alternancia de tema na interface.
+- Refatoracao de UI para manter mais widgets registrados e permitir atualizacao dinamica de cores.
+- Ajustes visuais em secoes, labels e botoes da interface.
+- Ajustes na logica de download/listagem com melhorias de mensagens e comentarios internos.
+- Inclusao de `README.md` e `LICENSE` dentro da pasta `VVD`.
 
 ## Estrutura do projeto
 
-- `VVD/app.py`: inicialização da aplicação
-- `VVD/ui_builder.py`: construção da interface
-- `VVD/downloader_logic.py`: lógica de listagem e download
-- `VVD/theme.py`: cores e estilos da interface
+- `app.py`: inicializacao e controle principal da aplicacao
+- `ui_builder.py`: construcao da interface
+- `downloader_logic.py`: logica de listagem e download
+- `theme.py`: definicao de temas, cores e fontes
 
-## Licença
+## Licenca
 
-Este projeto está sob a licença MIT. Consulte o arquivo `LICENSE`.
+MIT. Consulte o arquivo `LICENSE`.

@@ -1,12 +1,12 @@
-"""Construção da interface Tkinter."""
+﻿"""Monta a interface Tkinter da aplicacao."""
 
 import tkinter as tk
 from tkinter import ttk, scrolledtext
-from theme import COLORS, FONTS, PADDING, COMPONENT_CONFIG
+from theme import COLORS, FONTS, PADDING, COMPONENT_CONFIG, get_colors, THEMES
 
 
 class UIBuilder:
-    """Monta os componentes visuais da aplicação."""
+    """Construtor de widgets da tela principal."""
     
     def __init__(self, root, controller):
         self.root = root
@@ -14,82 +14,112 @@ class UIBuilder:
         self.widgets = {}
         
     def build_interface(self):
-        """Constrói a interface completa"""
+        """ConstrÃ³i a interface completa"""
         self.setup_window()
+        self.create_theme_button()
         self.create_title_section()
         self.create_main_frame()
         
     def setup_window(self):
-        """Configura a janela principal."""
+        """Configura a janela principal"""
         self.root.title("Video Downloader Pro")
         self.root.geometry("800x1200")
         self.root.configure(bg=COLORS['bg_principal'])
         
-    def create_title_section(self):
-        """Cria a seção de título"""
-        title_frame = tk.Frame(self.root, bg=COLORS['bg_principal'])
-        title_frame.pack(pady=PADDING['large'])
+    def create_theme_button(self):
+        """Cria botÃ£o de alternÃ¢ncia de tema"""
+        self.widgets['theme_frame'] = tk.Frame(self.root, bg=COLORS['bg_principal'])
+        self.widgets['theme_frame'].pack(pady=(5, 0), padx=10, fill=tk.X)
         
-        title_label = tk.Label(
-            title_frame,
-            text=" Simple Video Downloader",
+        self.widgets['theme_btn'] = tk.Button(
+            self.widgets['theme_frame'],
+            text="ðŸŒ™ Night Mode",
+            command=self.controller.toggle_theme,
+            bg=COLORS['btn_secondary'],
+            fg=COLORS['btn_text'],
+            font=FONTS['button_tertiary'],
+            relief=tk.FLAT,
+            cursor='hand2',
+            activebackground=COLORS['btn_secondary_hover'],
+            padx=10,
+            pady=5
+        )
+        self.widgets['theme_btn'].pack(side=tk.RIGHT)
+        
+    def update_theme_button(self):
+        """Atualiza o texto do botÃ£o de tema"""
+        from theme import CURRENT_THEME
+        if CURRENT_THEME == 'light':
+            self.widgets['theme_btn'].config(text="ðŸŒ™ Night Mode")
+        else:
+            self.widgets['theme_btn'].config(text="â˜€ï¸ Light Mode")
+        
+    def create_title_section(self):
+        """Cria a seÃ§Ã£o de tÃ­tulo"""
+        self.widgets['title_frame'] = tk.Frame(self.root, bg=COLORS['bg_principal'])
+        self.widgets['title_frame'].pack(pady=PADDING['large'])
+        
+        self.widgets['title_label'] = tk.Label(
+            self.widgets['title_frame'],
+            text="ðŸŽ¬ Valentina's Video Downloader",
             font=FONTS['title_main'],
             bg=COLORS['bg_principal'],
             fg=COLORS['text_principal']
         )
-        title_label.pack()
+        self.widgets['title_label'].pack()
         
-        subtitle = tk.Label(
-            title_frame,
-            text="YouTube • Vimeo • TikTok • Instagram e muito mais",
+        self.widgets['subtitle_label'] = tk.Label(
+            self.widgets['title_frame'],
+            text="YouTube â€¢ Vimeo â€¢ TikTok â€¢ Instagram e muito mais",
             font=FONTS['title_sub'],
             bg=COLORS['bg_principal'],
             fg=COLORS['text_tertiary']
         )
-        subtitle.pack()
+        self.widgets['subtitle_label'].pack()
         
     def create_main_frame(self):
         """Cria o frame principal e todos os seus componentes"""
-        main_frame = tk.Frame(
+        self.widgets['main_frame'] = tk.Frame(
             self.root,
             bg=COLORS['bg_secundario'],
             relief=tk.RAISED,
             bd=2
         )
-        main_frame.pack(
+        self.widgets['main_frame'].pack(
             padx=PADDING['large'],
             pady=PADDING['medium'],
             fill=tk.BOTH,
             expand=True
         )
         
-        self.create_url_section(main_frame)
-        self.create_video_info_section(main_frame)
-        self.create_quality_section(main_frame)
-        self.create_folder_section(main_frame)
-        self.create_buttons_section(main_frame)
-        self.create_progress_section(main_frame)
-        self.create_status_section(main_frame)
-        self.create_log_section(main_frame)
+        self.create_url_section(self.widgets['main_frame'])
+        self.create_video_info_section(self.widgets['main_frame'])
+        self.create_quality_section(self.widgets['main_frame'])
+        self.create_folder_section(self.widgets['main_frame'])
+        self.create_buttons_section(self.widgets['main_frame'])
+        self.create_progress_section(self.widgets['main_frame'])
+        self.create_status_section(self.widgets['main_frame'])
+        self.create_log_section(self.widgets['main_frame'])
         
     def create_url_section(self, parent):
-        """Seção de entrada de URL"""
-        url_frame = tk.Frame(parent, bg=COLORS['bg_secundario'])
-        url_frame.pack(padx=PADDING['large'], pady=PADDING['medium'], fill=tk.X)
+        """SeÃ§Ã£o de entrada de URL"""
+        self.widgets['url_frame'] = tk.Frame(parent, bg=COLORS['bg_secundario'], relief=tk.SUNKEN, bd=1)
+        self.widgets['url_frame'].pack(padx=PADDING['large'], pady=PADDING['medium'], fill=tk.X)
         
-        tk.Label(
-            url_frame,
-            text="📎 URL do Vídeo:",
+        self.widgets['url_label'] = tk.Label(
+            self.widgets['url_frame'],
+            text="ðŸ“Ž URL do VÃ­deo:",
             font=FONTS['label_secondary'],
             bg=COLORS['bg_secundario'],
             fg=COLORS['text_secundario']
-        ).pack(anchor=tk.W)
+        )
+        self.widgets['url_label'].pack(anchor=tk.W)
         
-        url_entry_frame = tk.Frame(url_frame, bg=COLORS['bg_secundario'])
-        url_entry_frame.pack(fill=tk.X, pady=PADDING['small'])
+        self.widgets['url_entry_frame'] = tk.Frame(self.widgets['url_frame'], bg=COLORS['bg_secundario'], relief=tk.FLAT, bd=0)
+        self.widgets['url_entry_frame'].pack(fill=tk.X, pady=PADDING['small'])
         
         self.widgets['url_entry'] = tk.Entry(
-            url_entry_frame,
+            self.widgets['url_entry_frame'],
             textvariable=self.controller.url_var,
             font=FONTS['text_normal'],
             bg=COLORS['bg_inputs'],
@@ -106,8 +136,8 @@ class UIBuilder:
         )
         
         self.widgets['info_btn'] = tk.Button(
-            url_entry_frame,
-            text="🔍 Ver Qualidades",
+            self.widgets['url_entry_frame'],
+            text="ðŸ” Ver Qualidades",
             command=self.controller.listar_qualidades,
             bg=COLORS['btn_primary'],
             fg=COLORS['btn_text'],
@@ -120,7 +150,7 @@ class UIBuilder:
         self.widgets['info_btn'].pack(side=tk.LEFT, padx=(PADDING['small'], 0))
         
     def create_video_info_section(self, parent):
-        """Seção de informações do vídeo"""
+        """SeÃ§Ã£o de informaÃ§Ãµes do vÃ­deo"""
         self.widgets['info_frame'] = tk.Frame(parent, bg=COLORS['bg_inputs'])
         
         self.widgets['info_label'] = tk.Label(
@@ -135,8 +165,8 @@ class UIBuilder:
         self.widgets['info_label'].pack(padx=PADDING['medium'], pady=PADDING['medium'])
         
     def create_quality_section(self, parent):
-        """Seção de qualidades disponíveis"""
-        self.widgets['quality_frame'] = tk.Frame(parent, bg=COLORS['bg_secundario'])
+        """SeÃ§Ã£o de qualidades disponÃ­veis"""
+        self.widgets['quality_frame'] = tk.Frame(parent, bg=COLORS['bg_secundario'], relief=tk.SUNKEN, bd=1)
         self.widgets['quality_frame'].pack(
             padx=PADDING['large'],
             pady=PADDING['medium'],
@@ -144,15 +174,16 @@ class UIBuilder:
             expand=True
         )
         
-        tk.Label(
+        self.widgets['quality_label'] = tk.Label(
             self.widgets['quality_frame'],
-            text="🎯 Qualidades Disponíveis:",
+            text="ðŸŽ¯ Qualidades DisponÃ­veis:",
             font=FONTS['label_main'],
             bg=COLORS['bg_secundario'],
             fg=COLORS['text_secundario']
-        ).pack(anchor=tk.W, pady=(0, PADDING['small']))
+        )
+        self.widgets['quality_label'].pack(anchor=tk.W, pady=(0, PADDING['small']))
         
-        list_frame = tk.Frame(self.widgets['quality_frame'], bg=COLORS['bg_secundario'])
+        list_frame = tk.Frame(self.widgets['quality_frame'], bg=COLORS['bg_secundario'], relief=tk.FLAT, bd=0)
         list_frame.pack(fill=tk.BOTH, expand=True)
         
         scrollbar = tk.Scrollbar(list_frame)
@@ -179,21 +210,22 @@ class UIBuilder:
         
         self.widgets['quality_listbox'].insert(
             0,
-            "Clique em 'Ver Qualidades' para listar os formatos disponíveis"
+            "Clique em 'Ver Qualidades' para listar os formatos disponÃ­veis"
         )
         
     def create_folder_section(self, parent):
-        """Seção de seleção de pasta"""
-        pasta_frame = tk.Frame(parent, bg=COLORS['bg_secundario'])
+        """SeÃ§Ã£o de seleÃ§Ã£o de pasta"""
+        pasta_frame = tk.Frame(parent, bg=COLORS['bg_secundario'], relief=tk.SUNKEN, bd=1)
         pasta_frame.pack(padx=PADDING['large'], pady=PADDING['medium'], fill=tk.X)
         
-        tk.Label(
+        self.widgets['pasta_label'] = tk.Label(
             pasta_frame,
-            text="📁 Pasta de Destino:",
+            text="ðŸ“ Pasta de Destino:",
             font=FONTS['label_main'],
             bg=COLORS['bg_secundario'],
             fg=COLORS['text_secundario']
-        ).pack(anchor=tk.W)
+        )
+        self.widgets['pasta_label'].pack(anchor=tk.W)
         
         pasta_entry_frame = tk.Frame(pasta_frame, bg=COLORS['bg_secundario'])
         pasta_entry_frame.pack(fill=tk.X, pady=PADDING['small'])
@@ -217,7 +249,7 @@ class UIBuilder:
         
         self.widgets['browse_btn'] = tk.Button(
             pasta_entry_frame,
-            text="📂 Escolher",
+            text="ðŸ“‚ Escolher",
             command=self.controller.escolher_pasta,
             bg=COLORS['btn_primary'],
             fg=COLORS['btn_text'],
@@ -230,13 +262,13 @@ class UIBuilder:
         self.widgets['browse_btn'].pack(side=tk.LEFT, padx=(PADDING['small'], 0))
         
     def create_buttons_section(self, parent):
-        """Seção de botões de download"""
-        button_frame = tk.Frame(parent, bg=COLORS['bg_secundario'])
-        button_frame.pack(padx=PADDING['large'], pady=PADDING['medium'], fill=tk.X)
+        """SeÃ§Ã£o de botÃµes de download"""
+        self.widgets['button_frame'] = tk.Frame(parent, bg=COLORS['bg_secundario'], relief=tk.SUNKEN, bd=1)
+        self.widgets['button_frame'].pack(padx=PADDING['large'], pady=PADDING['medium'], fill=tk.X)
         
         self.widgets['smart_btn'] = tk.Button(
-            button_frame,
-            text="⚡ DOWNLOAD INTELIGENTE (Melhor Qualidade)",
+            self.widgets['button_frame'],
+            text="âš¡ DOWNLOAD INTELIGENTE (Melhor Qualidade)",
             command=self.controller.download_inteligente,
             bg=COLORS['btn_secondary'],
             fg=COLORS['btn_text'],
@@ -250,8 +282,8 @@ class UIBuilder:
         self.widgets['smart_btn'].pack(fill=tk.X, pady=(0, PADDING['small']))
         
         self.widgets['download_btn'] = tk.Button(
-            button_frame,
-            text="⬇️  BAIXAR QUALIDADE SELECIONADA",
+            self.widgets['button_frame'],
+            text="â¬‡ï¸  BAIXAR QUALIDADE SELECIONADA",
             command=self.controller.start_download,
             bg=COLORS['btn_primary'],
             fg=COLORS['btn_text'],
@@ -266,7 +298,7 @@ class UIBuilder:
         self.widgets['download_btn'].pack(fill=tk.X)
         
     def create_progress_section(self, parent):
-        """Seção de barra de progresso"""
+        """SeÃ§Ã£o de barra de progresso"""
         self.widgets['progress'] = ttk.Progressbar(
             parent,
             orient=tk.HORIZONTAL,
@@ -280,10 +312,10 @@ class UIBuilder:
         )
         
     def create_status_section(self, parent):
-        """Seção de status"""
+        """SeÃ§Ã£o de status"""
         self.widgets['status_label'] = tk.Label(
             parent,
-            text="Cole uma URL e use Download Inteligente ou veja as qualidades disponíveis",
+            text="Cole uma URL e use Download Inteligente ou veja as qualidades disponÃ­veis",
             font=FONTS['text_small'],
             bg=COLORS['bg_secundario'],
             fg=COLORS['text_secundario']
@@ -291,25 +323,26 @@ class UIBuilder:
         self.widgets['status_label'].pack(pady=(0, PADDING['small']))
         
     def create_log_section(self, parent):
-        """Seção de log"""
-        log_frame = tk.Frame(parent, bg=COLORS['bg_secundario'])
-        log_frame.pack(
+        """SeÃ§Ã£o de log"""
+        self.widgets['log_frame'] = tk.Frame(parent, bg=COLORS['bg_secundario'], relief=tk.SUNKEN, bd=1)
+        self.widgets['log_frame'].pack(
             padx=PADDING['large'],
             pady=(0, PADDING['large']),
             fill=tk.BOTH,
             expand=True
         )
         
-        tk.Label(
-            log_frame,
-            text="📋 Log:",
+        self.widgets['log_label'] = tk.Label(
+            self.widgets['log_frame'],
+            text="ðŸ“‹ Log:",
             font=FONTS['label_secondary'],
             bg=COLORS['bg_secundario'],
             fg=COLORS['text_secundario']
-        ).pack(anchor=tk.W)
+        )
+        self.widgets['log_label'].pack(anchor=tk.W)
         
         self.widgets['log_text'] = scrolledtext.ScrolledText(
-            log_frame,
+            self.widgets['log_frame'],
             height=6,
             font=FONTS['text_small'],
             bg=COLORS['bg_inputs'],
@@ -318,3 +351,6 @@ class UIBuilder:
             bd=5
         )
         self.widgets['log_text'].pack(fill=tk.BOTH, expand=True, pady=PADDING['small'])
+
+
+
