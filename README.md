@@ -1,4 +1,4 @@
-﻿# Video Downloader (VVD v1.1)
+﻿# Video Downloader (SVD v1.1)
 
 Aplicativo desktop em Python (Tkinter) para baixar vídeos com `yt-dlp`.
 
