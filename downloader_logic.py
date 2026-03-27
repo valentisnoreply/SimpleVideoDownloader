@@ -1,4 +1,7 @@
-﻿"""Regras de download e listagem de formatos."""
+"""
+Lógica principal da aplicação
+Responsável por toda a funcionalidade de download
+"""
 
 import tkinter as tk
 from tkinter import filedialog, messagebox
@@ -10,7 +13,7 @@ from pathlib import Path
 
 
 class DownloaderLogic:
-    """Controla download, formatos e status da interface."""
+    """Classe responsável pela lógica de download e processamento de vídeos"""
     
     def __init__(self, gui):
         self.gui = gui
@@ -27,9 +30,9 @@ class DownloaderLogic:
                 check=True,
                 timeout=5
             )
-            self.log("Nisu, FFmpeg detectado! Qualidade Top disponível")
+            self.log("✅ FFmpeg detectado! Qualidade máxima disponível")
         except:
-            self.log("Yerro! FFmpeg não encontrado - Qualidade pode ser limitada")
+            self.log("⚠️  FFmpeg não encontrado - Qualidade pode ser limitada")
     
     def log(self, message):
         """Registra mensagem no log"""
@@ -44,10 +47,10 @@ class DownloaderLogic:
             self.gui.pasta_var.set(pasta)
     
     def download_inteligente(self):
-        """Download automático na melhor qualidade poss­vel"""
+        """Download automático na melhor qualidade possível"""
         url = self.gui.url_var.get().strip()
         if not url:
-            messagebox.showwarning("Aviso", "Por favor, insira uma URL")
+            messagebox.showwarning("Coloca uma URL ai pra nois baixar")
             return
         
         if self.downloading:
@@ -56,7 +59,7 @@ class DownloaderLogic:
         self.downloading = True
         self.gui.ui.widgets['smart_btn'].config(
             state=tk.DISABLED,
-            text="â³ BAIXANDO..."
+            text="⏳ BAIXANDO..."
         )
         self.gui.ui.widgets['download_btn'].config(state=tk.DISABLED)
         self.gui.ui.widgets['progress'].start(10)
@@ -73,6 +76,7 @@ class DownloaderLogic:
         
         Path(pasta).mkdir(parents=True, exist_ok=True)
         
+        # Formato que SEMPRE funciona - tenta da melhor para pior qualidade
         formato_string = 'bestvideo[ext=mp4]+bestaudio[ext=m4a]/bestvideo+bestaudio/best[ext=mp4]/best'
         
         opcoes = {
@@ -87,9 +91,9 @@ class DownloaderLogic:
         }
         
         try:
-            self.log("Download Inteligente: Buscando melhor qualidade...")
+            self.log("⚡ Download Inteligente: Buscando melhor qualidade...")
             self.gui.ui.widgets['status_label'].config(
-                text="Baixando na melhor qualidade disponÃ­vel..."
+                text="Baixando na melhor qualidade disponível..."
             )
             
             with yt_dlp.YoutubeDL(opcoes) as ydl:
@@ -97,9 +101,9 @@ class DownloaderLogic:
                 titulo = info.get('title', 'video')
                 altura = info.get('height', '?')
             
-            self.log("Download concluído!")
-            self.log(f"“¹ resolução: {altura}p")
-            self.log(f"ðŸ“ Salvo em: {os.path.abspath(pasta)}")
+            self.log("✅ Download concluído!")
+            self.log(f"📹 Resolução: {altura}p")
+            self.log(f"📁 Salvo em: {os.path.abspath(pasta)}")
             self.gui.ui.widgets['status_label'].config(
                 text="Download concluído!"
             )
@@ -110,20 +114,20 @@ class DownloaderLogic:
             )
             
         except Exception as e:
-            self.log(f"âŒ Erro: {str(e)}")
+            self.log(f"❌ Erro: {str(e)}")
             self.gui.ui.widgets['status_label'].config(
                 text="Erro no download"
             )
             messagebox.showerror(
                 "Erro",
-                f"Erro ao baixar vÃ­deo:\n{str(e)}"
+                f"Erro ao baixar vídeo:\n{str(e)}"
             )
         
         finally:
             self.downloading = False
             self.gui.ui.widgets['smart_btn'].config(
                 state=tk.NORMAL,
-                text="âš¡ DOWNLOAD INTELIGENTE (Melhor Qualidade)"
+                text="⚡ DOWNLOAD INTELIGENTE (Melhor Qualidade)"
             )
             self.gui.ui.widgets['download_btn'].config(
                 state=tk.NORMAL if self.formatos_disponiveis else tk.DISABLED
@@ -131,15 +135,15 @@ class DownloaderLogic:
             self.gui.ui.widgets['progress'].stop()
     
     def listar_qualidades(self):
-        """Lista as qualidades disponiveis de um vÃ­deo"""
+        """Lista as qualidades disponíveis de um vídeo"""
         url = self.gui.url_var.get().strip()
         if not url:
             messagebox.showwarning("Aviso", "Por favor, insira uma URL")
             return
         
-        self.log("ðŸ” Analisando formatos disponiveis...")
+        self.log("🔍 Analisando formatos disponíveis...")
         self.gui.ui.widgets['status_label'].config(
-            text="Obtendo qualidades disponiveis..."
+            text="Obtendo qualidades disponíveis..."
         )
         self.gui.ui.widgets['quality_listbox'].delete(0, tk.END)
         
@@ -150,7 +154,7 @@ class DownloaderLogic:
         ).start()
     
     def _fetch_formats(self, url):
-        """Busca os formatos disponiveis em thread"""
+        """Busca os formatos disponíveis em thread"""
         try:
             opcoes = {
                 'quiet': True,
@@ -165,7 +169,8 @@ class DownloaderLogic:
                 titulo = info.get('title', 'Desconhecido')
                 duracao = info.get('duration', 0)
                 
-                msg = f"ðŸ“¹ {titulo}\nâ±ï¸ {duracao//60}:{duracao%60:02d}"
+                # Mostrar info do vídeo
+                msg = f"📹 {titulo}\n⏱️ {duracao//60}:{duracao%60:02d}"
                 self.gui.ui.widgets['info_frame'].pack(
                     padx=20,
                     pady=(0, 15),
@@ -173,16 +178,17 @@ class DownloaderLogic:
                 )
                 self.gui.ui.widgets['info_label'].config(text=msg)
                 
+                # Processar formatos
                 self._process_formats(info.get('formats', []))
                 
         except Exception as e:
-            self.log(f"âŒ Erro: {str(e)}")
+            self.log(f"❌ Erro: {str(e)}")
             self.gui.ui.widgets['status_label'].config(
                 text="Erro ao obter qualidades"
             )
     
     def _process_formats(self, formatos):
-        """Processa e filtra os formatos disponiveis"""
+        """Processa e filtra os formatos disponíveis"""
         self.formatos_disponiveis = []
         formatos_video = []
         formatos_unicos = {}
@@ -203,7 +209,7 @@ class DownloaderLogic:
                     
                     codec_display = self._get_codec_name(vcodec)
                     size_mb = filesize / (1024*1024) if filesize else 0
-                    tem_audio = "ðŸ”Š" if acodec != 'none' else "ðŸ”‡"
+                    tem_audio = "🔊" if acodec != 'none' else "🔇"
                     
                     chave = f"{height}_{fps}_{codec_display}_{tem_audio}"
                     
@@ -239,18 +245,18 @@ class DownloaderLogic:
             
             self.gui.ui.widgets['quality_listbox'].select_set(0)
             self.gui.ui.widgets['download_btn'].config(state=tk.NORMAL)
-            self.log(f"âœ… {len(formatos_video)} qualidades encontradas!")
+            self.log(f"✅ {len(formatos_video)} qualidades encontradas!")
             self.gui.ui.widgets['status_label'].config(
-                text=f"âœ… {len(formatos_video)} qualidades - Selecione e clique em Baixar"
+                text=f"✅ {len(formatos_video)} qualidades - Selecione e clique em Baixar"
             )
         else:
             self.gui.ui.widgets['quality_listbox'].insert(
                 tk.END,
-                "Nenhum formato encontrado"
+                "❌ Nenhum formato encontrado"
             )
-            self.log("âš ï¸  Nenhum formato de vídeo encontrado")
+            self.log("⚠️  Nenhum formato de vídeo encontrado")
             self.gui.ui.widgets['status_label'].config(
-                text="Nenhum formato disponÃ­vel"
+                text="Nenhum formato disponível"
             )
     
     @staticmethod
@@ -278,7 +284,7 @@ class DownloaderLogic:
         self.downloading = True
         self.gui.ui.widgets['download_btn'].config(
             state=tk.DISABLED,
-            text="â³ BAIXANDO..."
+            text="⏳ BAIXANDO..."
         )
         self.gui.ui.widgets['smart_btn'].config(state=tk.DISABLED)
         self.gui.ui.widgets['progress'].start(10)
@@ -290,7 +296,7 @@ class DownloaderLogic:
         ).start()
     
     def download_video(self, format_index):
-        """Executa o download de um vÃ­deo em thread"""
+        """Executa o download de um vídeo em thread"""
         url = self.gui.url_var.get().strip()
         pasta = self.gui.pasta_var.get()
         
@@ -298,8 +304,9 @@ class DownloaderLogic:
         
         formato_escolhido = self.formatos_disponiveis[format_index]
         format_id = formato_escolhido['id']
-        tem_audio = formato_escolhido['audio'] == "ðŸ”Š"
+        tem_audio = formato_escolhido['audio'] == "🔊"
         
+        # Criar string de formato com fallbacks
         if not tem_audio:
             format_string = f"{format_id}+bestaudio[ext=m4a]/{format_id}+bestaudio/{format_id}"
         else:
@@ -317,7 +324,7 @@ class DownloaderLogic:
         }
         
         try:
-            self.log(f"â¬‡ï¸  Baixando em {formato_escolhido['height']}p...")
+            self.log(f"⬇️  Baixando em {formato_escolhido['height']}p...")
             self.gui.ui.widgets['status_label'].config(
                 text=f"Baixando {formato_escolhido['height']}p..."
             )
@@ -326,28 +333,28 @@ class DownloaderLogic:
                 info = ydl.extract_info(url, download=True)
                 titulo = info.get('title', 'video')
             
-            self.log("âœ… Download concluÃ­do!")
+            self.log("✅ Download concluído!")
             self.log(
-                f"ðŸ“¹ ResoluÃ§Ã£o: {formato_escolhido['height']}p [{formato_escolhido['codec']}]"
+                f"📹 Resolução: {formato_escolhido['height']}p [{formato_escolhido['codec']}]"
             )
-            self.log(f"ðŸ“ Salvo em: {os.path.abspath(pasta)}")
+            self.log(f"📁 Salvo em: {os.path.abspath(pasta)}")
             self.gui.ui.widgets['status_label'].config(
-                text="Download concluÃ­do!"
+                text="Download concluído!"
             )
             
             messagebox.showinfo(
                 "Sucesso",
-                f"VÃ­deo baixado!\n\n{titulo}.mp4\nResoluÃ§Ã£o: {formato_escolhido['height']}p"
+                f"Vídeo baixado!\n\n{titulo}.mp4\nResolução: {formato_escolhido['height']}p"
             )
             
         except Exception as e:
-            self.log(f"âŒ Erro: {str(e)}")
+            self.log(f"❌ Erro: {str(e)}")
             self.gui.ui.widgets['status_label'].config(
                 text="Erro - Tente Download Inteligente"
             )
             messagebox.showerror(
                 "Erro",
-                f"NÃ£o foi possÃ­vel baixar neste formato.\n\nTente usar o DOWNLOAD INTELIGENTE "
+                f"Não foi possível baixar neste formato.\n\nTente usar o DOWNLOAD INTELIGENTE "
                 f"ou selecione outra qualidade.\n\nErro: {str(e)[:150]}"
             )
         
@@ -355,10 +362,7 @@ class DownloaderLogic:
             self.downloading = False
             self.gui.ui.widgets['download_btn'].config(
                 state=tk.NORMAL,
-                text="â¬‡ï¸  BAIXAR QUALIDADE SELECIONADA"
+                text="⬇️  BAIXAR QUALIDADE SELECIONADA"
             )
             self.gui.ui.widgets['smart_btn'].config(state=tk.NORMAL)
             self.gui.ui.widgets['progress'].stop()
-
-
-

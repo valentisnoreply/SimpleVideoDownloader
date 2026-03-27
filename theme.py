@@ -1,53 +1,68 @@
-﻿"""Temas, paleta e configuracoes visuais."""
+"""
+Configuração de temas e cores da aplicação
+Suporta múltiplos temas: light (pastel rosa) e dark (night mode)
+"""
 
+# Temas disponíveis
 THEMES = {
     'light': {
-        'name': 'â˜€ï¸ Light Mode',
+        'name': '☀️ Light Mode',
         'colors': {
-            'bg_principal': '#fce9f3',
-            'bg_secundario': '#fdf4f9',
-            'bg_inputs': '#f5d8ed',
+            # Fundos
+            'bg_window': "#fff4fa",         # Fundo da janela principal
+            'bg_principal': "#fff4fa",      # Rosa pastel muito claro
+            'bg_secundario': "#ffe6f8",     # Rosa pastel claro
+            'bg_inputs': "#f1c0e3",         # Rosa pastel suave
             
-            'text_principal': '#d67ba6',
-            'text_secundario': '#a0708f',
-            'text_tertiary': '#c09ab5',
-            'text_input': '#5a4a5a',
+            # Textos
+            'text_principal': "#be6d93",    # Rosa médio
+            'text_secundario': "#be6d93",   # Rosa roxo suave
+            'text_tertiary': '#be6d93',     # Rosa lavanda
+            'text_input': '#be6d93',        # Roxo escuro suave
             
-            'btn_primary': '#d67ba6',
-            'btn_primary_hover': '#c0679b',
-            'btn_secondary': '#e8a4c2',
-            'btn_secondary_hover': '#d67ba6',
+            # Botões
+            'btn_primary': '#d67ba6',       # Rosa médio
+            'btn_primary_hover': '#c0679b', # Rosa médio escuro
+            'btn_secondary': '#e8a4c2',     # Rosa claro
+            'btn_secondary_hover': '#d67ba6',  # Rosa médio
             
-            'btn_text': 'white',
-            'select_bg': '#d67ba6',
-            'select_text': 'white',
+            # Status
+            'btn_text': 'white',            # Branco
+            'select_bg': '#d67ba6',         # Rosa médio (seleção)
+            'select_text': 'white',         # Branco
         }
     },
     'dark': {
-        'name': 'ðŸŒ™ Dark Mode',
+        'name': '🌙 Dark Mode',
         'colors': {
-            'bg_principal': "#1a1a2e",
-            'bg_secundario': '#2d2d44',
-            'bg_inputs': '#383838',
+            # Fundos
+            'bg_window': "#202020",         # Fundo da janela principal (mais escuro)
+            'bg_principal': "#202020",      # Azul muito escuro
+            'bg_secundario': "#202020",     # Azul escuro
+            'bg_inputs': "#202020",         # Azul bem escuro
             
-            'text_principal': '#00d4ff',
-            'text_secundario': '#00d4ff',
-            'text_tertiary': '#00d4ff',
-            'text_input': '#00d4ff',
+            # Textos
+            'text_principal': "#ffc2dd",    # Ciano brilhante
+            'text_secundario': "#ffc2dd",   # Cinza claro
+            'text_tertiary': '#ffc2dd',     # Azul claro
+            'text_input': '#ffc2dd',        # Cinza muito claro
             
-            'btn_primary': '#00d4ff',
-            'btn_primary_hover': '#00a8cc',
-            'btn_secondary': '#533483',
-            'btn_secondary_hover': '#6d47a0',
+            # Botões
+            'btn_primary': "#c8ff00",       # Ciano brilhante
+            'btn_primary_hover': '#c8ff00', # Ciano médio
+            'btn_secondary': '#533483',     # Roxo
+            'btn_secondary_hover': '#6d47a0',  # Roxo claro
             
-            'btn_text': 'white',
-            'select_bg': '#533483',
-            'select_text': '#00d4ff',
+            # Status
+            'btn_text': 'white',            # Branco
+            'select_bg': '#533483',         # Roxo (seleção)
+            'select_text': '#d67ba6',       # Ciano
         }
     }
 }
 
-CURRENT_THEME = 'light'
+# Tema padrão
+CURRENT_THEME = 'dark'
 
 def get_colors(theme=None):
     """Retorna as cores do tema especificado"""
@@ -69,33 +84,38 @@ def get_theme_name(theme=None):
         theme = CURRENT_THEME
     return THEMES[theme]['name']
 
+# Exportar cores do tema atual
 COLORS = get_colors()
 
 
+# Configuração de Fontes
 FONTS = {
     'title_main': ('Segoe UI', 28, 'bold'),
     'title_sub': ('Segoe UI', 11),
-    'label_main': ('Segoe UI', 12, 'bold'),
-    'label_secondary': ('Segoe UI', 11, 'bold'),
+    'label_main': ('Segoe UI', 16, 'bold'),
+    'label_secondary': ('Segoe UI', 16, 'bold'),
     'label_tertiary': ('Segoe UI', 10),
     'button_main': ('Segoe UI', 13, 'bold'),
     'button_secondary': ('Segoe UI', 11, 'bold'),
     'button_tertiary': ('Segoe UI', 10, 'bold'),
     'text_normal': ('Segoe UI', 10),
-    'text_small': ('Segoe UI', 9),
+    'text_small': ('Segoe UI', 11),
     'monospace': ('Segoe UI', 10),
 }
 
+# Tamanhos e Espaçamento
 PADDING = {
-    'large': 20,
-    'medium': 15,
-    'small': 5,
-    'tiny': 2,
+    'large': 15,
+    'medium': 10,
+    'small': 3,
+    'tiny': 1,
 }
 
-WINDOW_WIDTH = 900
-WINDOW_HEIGHT = 750
+# Dimensões da janela
+WINDOW_WIDTH = 880
+WINDOW_HEIGHT = 600
 
+# Configurações de componentes
 COMPONENT_CONFIG = {
     'entry': {
         'relief': 'flat',
@@ -112,6 +132,3 @@ COMPONENT_CONFIG = {
         'height': 10,
     },
 }
-
-
-
